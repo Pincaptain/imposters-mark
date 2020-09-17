@@ -56,6 +56,15 @@ class WindowRepositoryHelper(object):
 
 
 class IWindowRepository(ABC):
+    """
+    Abstract class for a window repository containing the required
+    methods and their signatures.
+
+    I encourage you to create a custom implementation of the
+    window repository class that will not depend on a static helper
+    class for the win32 api methods.
+    """
+
     @abstractmethod
     def get_window_handle(self, window_name: str) -> int:
         pass
@@ -66,6 +75,11 @@ class IWindowRepository(ABC):
 
 
 class WindowRepository(IWindowRepository):
+    """
+    Window repository class used to obtain a window handle (int) or
+    a window rect (bounding rectangle of a window).
+    """
+
     # noinspection PyMethodMayBeStatic
     def get_window_handle(self, window_name: str) -> int:
         """
