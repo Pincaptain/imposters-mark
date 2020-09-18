@@ -11,6 +11,7 @@ class WindowRepositoryHelper(object):
 
     t_window_handle = None
     t_window_rect = None
+    t_window_set = False
 
     @staticmethod
     def get_window_handle(window_name: str) -> int:
@@ -22,6 +23,7 @@ class WindowRepositoryHelper(object):
         :return: Window handle int
         """
 
+        WindowRepositoryHelper.t_window_set = False
         win32gui.EnumWindows(WindowRepositoryHelper.__iterate_windows, window_name)
 
         return WindowRepositoryHelper.t_window_handle
@@ -35,6 +37,8 @@ class WindowRepositoryHelper(object):
         :param window_name: Window name
         :return: Window rect tuple
         """
+
+        WindowRepositoryHelper.t_window_set = False
         win32gui.EnumWindows(WindowRepositoryHelper.__iterate_windows, window_name)
 
         return WindowRepositoryHelper.t_window_rect
@@ -50,9 +54,10 @@ class WindowRepositoryHelper(object):
         """
         t_window_name = win32gui.GetWindowText(window_handle)
 
-        if t_window_name == window_name:
+        if t_window_name == window_name and not WindowRepositoryHelper.t_window_set:
             WindowRepositoryHelper.t_window_handle = window_handle
             WindowRepositoryHelper.t_window_rect = win32gui.GetWindowRect(window_handle)
+            WindowRepositoryHelper.t_window_set = True
 
 
 class IWindowRepository(ABC):

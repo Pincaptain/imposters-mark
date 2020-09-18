@@ -1,10 +1,8 @@
 import sys
 
-import numpy
 import cv2
-from PIL import ImageGrab
 
-from imposters_mark.repositories.window_repository import WindowRepository
+from imposters_mark.configs.injection_config import InjectionConfig
 
 ESCAPE_KEY = 27
 
@@ -16,15 +14,15 @@ def t_main(argv):
 
 # noinspection PyUnusedLocal
 def main(argv):
-    window_repository = WindowRepository()
-    window_rect = window_repository.get_window_rect('Among Us')
+    injection_config = InjectionConfig()
+    screen_service = injection_config.get_screen_service()
 
     while True:
-        image = ImageGrab.grab(bbox=window_rect)
-        image_array = numpy.array(image)
-        image_frame = cv2.cvtColor(image_array, cv2.COLOR_BGR2RGB)
+        screen = screen_service.get_screen('Among Us')
 
-        cv2.imshow('Screen', image_frame)
+        cv2.namedWindow('Screen', cv2.WND_PROP_FULLSCREEN)
+        cv2.setWindowProperty('Screen', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+        cv2.imshow('Screen', screen)
 
         if cv2.waitKey(1) == ESCAPE_KEY:
             break
