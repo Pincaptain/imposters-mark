@@ -4,25 +4,12 @@ import win32gui
 
 
 class WindowRepositoryHelper(object):
-    """
-    Static class that provides the window repository class with the required
-    methods using the win32 api.
-    """
-
     t_window_handle = None
     t_window_rect = None
     t_window_set = False
 
     @staticmethod
     def get_window_handle(window_name: str) -> int:
-        """
-        Iterate over the windows and get the handle of the one with
-        the requested name.
-
-        :param window_name: Window name
-        :return: Window handle int
-        """
-
         WindowRepositoryHelper.t_window_set = False
         win32gui.EnumWindows(WindowRepositoryHelper.__iterate_windows, window_name)
 
@@ -30,14 +17,6 @@ class WindowRepositoryHelper(object):
 
     @staticmethod
     def get_window_rect(window_name: str) -> tuple:
-        """
-        Iterate over the windows and get the rect of the one with
-        the requested name.
-
-        :param window_name: Window name
-        :return: Window rect tuple
-        """
-
         WindowRepositoryHelper.t_window_set = False
         win32gui.EnumWindows(WindowRepositoryHelper.__iterate_windows, window_name)
 
@@ -45,13 +24,6 @@ class WindowRepositoryHelper(object):
 
     @staticmethod
     def __iterate_windows(window_handle, window_name):
-        """
-        Foreach window if the window name matches the requested name
-        update the static class variables to the current window.
-
-        :param window_handle: Window handle
-        :param window_name: Window name
-        """
         t_window_name = win32gui.GetWindowText(window_handle)
 
         if t_window_name == window_name and not WindowRepositoryHelper.t_window_set:
@@ -61,50 +33,21 @@ class WindowRepositoryHelper(object):
 
 
 class IWindowRepository(ABC):
-    """
-    Abstract class for a window repository containing the required
-    methods and their signatures.
-
-    I encourage you to create a custom implementation of the
-    window repository class that will not depend on a static helper
-    class for the win32 api methods.
-    """
-
     @abstractmethod
-    def get_window_handle(self, window_name: str) -> int:
+    def get_window_handle(self) -> int:
         pass
 
     @abstractmethod
-    def get_window_rect(self, window_name: str) -> tuple:
+    def get_window_rect(self) -> tuple:
         pass
 
 
 class WindowRepository(IWindowRepository):
-    """
-    Window repository class used to obtain a window handle (int) or
-    a window rect (bounding rectangle of a window).
-    """
+    def __init__(self, window_name: str):
+        self.window_name = window_name
 
-    # noinspection PyMethodMayBeStatic
-    def get_window_handle(self, window_name: str) -> int:
-        """
-        Using the helper class obtain the window handle using the
-        requested window name.
+    def get_window_handle(self) -> int:
+        return WindowRepositoryHelper.get_window_handle(self.window_name)
 
-        :param window_name: Window name
-        :return: Window handle int
-        """
-
-        return WindowRepositoryHelper.get_window_handle(window_name)
-
-    # noinspection PyMethodMayBeStatic
-    def get_window_rect(self, window_name: str) -> tuple:
-        """
-        Using the helper class obtain the window rect using the
-        requested window name.
-
-        :param window_name: Window name
-        :return: Window rect tuple
-        """
-
-        return WindowRepositoryHelper.get_window_rect(window_name)
+    def get_window_rect(self) -> tuple:
+        return WindowRepositoryHelper.get_window_rect(self.window_name)

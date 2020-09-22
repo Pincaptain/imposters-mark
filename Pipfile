@@ -11,6 +11,7 @@ pillow = "*"
 opencv-python = "*"
 pypiwin32 = "*"
 dependency-injector = "*"
+pytesseract = "*"
 
 [requires]
 python_version = "3.8"
